@@ -57,14 +57,15 @@ class ConfigDriver extends AbstractDriver
         $this->loop(function () use (&$prevConfig) {
             $config = $this->client->pull();
             if ($config !== $prevConfig) {
-                $keys = array_keys($config);
-                if (count($keys) === 1 && in_array($keys[0], $this->getSupportNamespaces())) {
-                    $tempConfigs = array_chunk($config[$keys[0]], 200, true);
-                    foreach ($tempConfigs as $item) {
-                        $this->syncConfig([$keys[0] => $item]);
+                foreach ($config as $c => $list) {
+                    if (count($list) > 200) {
+                        $tempConfigs = array_chunk($list, 200, true);
+                        foreach ($tempConfigs as $item) {
+                            $this->syncConfig([$c => $item]);
+                        }
+                    } else {
+                        $this->syncConfig([$c => $list]);
                     }
-                } else {
-                    $this->syncConfig($config);
                 }
                 $prevConfig = $config;
             }
