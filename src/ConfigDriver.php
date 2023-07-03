@@ -13,16 +13,17 @@ use Psr\Container\ContainerInterface;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\ConfigCenter\Contract\PipeMessageInterface;
 use Hyperf\Process\ProcessCollector;
+use Hyperf\ConfigCenter\Contract\ClientInterface as ConfigClientInterface;
 
 
 class ConfigDriver extends AbstractDriver
 {
     /**
-     * @var ClientInterface
+     * @var Client
      */
-    protected $client;
+    protected ConfigClientInterface $client;
 
-    protected $driverName = 'ecconfig';
+    protected string $driverName = 'ecconfig';
 
     protected $configTemplates = [];
 
@@ -137,7 +138,7 @@ class ConfigDriver extends AbstractDriver
      * 更新配置
      * @param array $config
      */
-    protected function updateConfig(array $config)
+    protected function updateConfig(array $config): void
     {
         $mergedConfigs = [];
         foreach ($config as $c) {
